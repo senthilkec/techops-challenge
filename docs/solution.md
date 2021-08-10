@@ -8,6 +8,7 @@ commit: a03fbcf166e6f74ef224d4a63be4277d017bb62e
 
 Terraform version:
 ------------------
+```
 C:\Users\seshanmugavel\Documents\Desktop Backup\Senthil\freeletics_techops_challenge\techops-challenge\terraform>terraform -version
 Terraform v0.15.5
 on windows_amd64
@@ -16,22 +17,30 @@ on windows_amd64
 + provider registry.terraform.io/hashicorp/kubernetes v1.13.3
 + provider registry.terraform.io/hashicorp/null v2.1.2
 
+```
+
 sops version:
 -------------
 C:\Users\seshanmugavel>sops -v
+```
 sops 3.4.0
 [info] sops 3.7.1 is available, update with `go get -u go.mozilla.org/sops/cmd/sops`
+
+```
 
 ## Challenge 1: Goal: Access the Jenkins
 -------------------------------------
 
 When I execute terraform plan, I got below error.
 
+```
 Error: Error getting data key: 0 successful groups required, got 0
 │
 │   with data.sops_file.secrets,
 │   on secrets.tf line 1, in data "sops_file" "secrets":
 │    1: data "sops_file" "secrets" {
+
+```
 
 I tried to troubleshoot the issue, issue seems to be a version mismatch. I'm not able to upgrade sops to latest version (v3.7.1).
 
@@ -42,6 +51,7 @@ Inorder to make the Jenkins accessible from local machine, Kubetnetes service sh
 
 Below code needs to be placed in modules/kubedoom/main.tf
 
+```
 resource "kubernetes_service" "kubedoom-service" {
   metadata {
     name = "kubedoom-service"
@@ -60,13 +70,18 @@ resource "kubernetes_service" "kubedoom-service" {
   }
 }
 
+```
+
 -Once the above code is placed, Jenkins can be accessible from local machine. 
 -Credentials can be retrieved from environment.json file. 
 -The encryption seems to be asymmetric encryption algorithm. The public key is used for encryption. The person with the public key can and can only encrypt, and it can be distributed to any organization or individual; The private key is used for decryption, and can only be used to decrypt the information encrypted by the public key paired with the private key. Anyone with the private key can decrypt it.
 -As the credentials are already encrypted, using sops tool, Below id and password should be decrypted using below command.
+```
  sops -d environment.json
+```
 -Look for the output for the Key: Jenkins.Credentials.Users
 
+```json
 "users": [
 			{
 				"id": "ENC[AES256_GCM,data:wd5Y1I0=,iv:nJmk1kZNwAAvYd97vz1BZHxfoEotmSE6hxTMz5kHj0E=,tag:Lst9yO/jtP4uT9cOCyhZ1g==,type:str]",
@@ -77,11 +92,15 @@ resource "kubernetes_service" "kubedoom-service" {
 				"password": "ENC[AES256_GCM,data:dOSTlo/tfZ0=,iv:zyC9Scc5PEKnMp+fqHIEuguEvjgjVO66TjNe4KpRzHI=,tag:NlcUW7aemckmz3iaeQ1jBg==,type:str]"
 			}
 		]
+```
 
 I tried to decrypt the environment.json file looks like the fields might get reorderd, Message Authentication Code (MAC) Mismatch Error occurs when the computed MAC does not match the expected ones
 
+```
 C:\Users\seshanmugavel\Documents\Desktop Backup\Senthil\freeletics_techops_challenge\techops-challenge\terraform>sops -d environment.json
 MAC mismatch. File has F3B838355B8685969C570D3D6448D6B247FD3F8588D1EDE8F9205BC08AE16ECFD5C1A811E685B1584ABB024A85D7077B4298E69A3502000A789EC96EEDC8FFCE, computed 5A634FABD8A3C227E1D846465EF9CFC6CDA02609E368328F208F41FAD209749200B9048D6ABA756B3061EA8D03D0BFCD448CEE43EB88E0CC59EEDF16010FABFA
+
+```
 
 ## Challenge 2: Goal: Cipher all credentials
 ----------- 
@@ -91,11 +110,14 @@ MAC mismatch. File has F3B838355B8685969C570D3D6448D6B247FD3F8588D1EDE8F9205BC08
 We should be able to pick the fields needs to be encrypted by including the keys in encrypted_regex field.
 The below code from .sops.yaml file doesn't include the key "string" in encrypted_regex, so the encryption is not performed.
 
+```
 creation_rules:
   - path_regex: .*\.json$
     encrypted_regex: '^(user.*|pass.*|secret.*|.*[Bb]earer.*|.*[Kk]ey|.*[Kk]eys|salt|sentry.*|.*[Tt]oken)$'
     pgp: >-
         BCD0654D6FA4AB48E40CDE7F1C854CC81B4C2229
+
+```
 
 But in general, we should not leave the plain text secrets in json file. As a best practice, we should include the "string" key in encrypted_regex.
 
@@ -121,14 +143,16 @@ maxUnavailable: The number of pods that can be unavailable during the update pro
 
 In order to use the rolling update for kubedoom app, below code needs to be added in kubernetes_deployment resource
 
+```
 strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
+```
 
 Below code needs to be added in kubernetes_deployment resource under spec by providing the limit, requests resources
-
+```
 resources {
             limits = {
               cpu    = "0.5"
@@ -139,3 +163,4 @@ resources {
               memory = "50Mi"
             }
           }
+```
