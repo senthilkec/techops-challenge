@@ -133,7 +133,11 @@ But in general, we should not leave the plain text secrets in json file. As a be
 
 **Solution:**
 
-One of the primary benefits of using a Deployment to control pods is the ability to perform rolling updates. Rolling updates allow you to update the configuration of your pods gradually, and Deployments offer many options to control this process.
+Users expect applications to be available all the time and developers are expected to deploy new versions of them several times a day. In Kubernetes this is done with rolling updates. 
+
+Rolling updates allow Deployments’ update to take place with zero downtime by incrementally updating Pods instances with new ones. The new Pods will be scheduled on Nodes with available resources.
+
+Rolling updates allow us to update the configuration of the pods gradually, and Deployments offer many options to control this process.
 
 The most important option to configure rolling updates is the update strategy. In Deployment manifest, spec.strategy.type has two possible values:
 
