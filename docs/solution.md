@@ -74,24 +74,6 @@ resource "kubernetes_service" "kubedoom-service" {
 
 ```
 
-Once the above code is placed, Jenkins can be accessible from local machine.  
-
-Credentials can be retrieved from environment.json file. Here are the Jenkins Users Credentials.
-
-```
-  "users": [
-                        {
-                                "id": "admin",
-                                "password": "t0p!secret"
-                        },
-                        {
-                                "id": "visitor",
-                                "password": "Ock*7C)2"
-                        }
-                ]
-
-```
-
 The encryption seems to be asymmetric encryption algorithm. The public key is used for encryption. The person with the public key can and can only encrypt, and it can be distributed to any organization or individual; The private key is used for decryption, and can only be used to decrypt the information encrypted by the public key paired with the private key. Anyone with the private key can decrypt it.  
 
 As the credentials are already encrypted, using sops tool, Below id and password should be decrypted using below command.
@@ -99,7 +81,7 @@ As the credentials are already encrypted, using sops tool, Below id and password
 ```
  sops -d environment.json
 ```
--Look for the output for the Key: Jenkins.Credentials.Users
+-Look for the output for the Key: Jenkins.Users
 
 ```json
 "users": [
