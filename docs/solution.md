@@ -76,7 +76,21 @@ resource "kubernetes_service" "kubedoom-service" {
 
 Once the above code is placed, Jenkins can be accessible from local machine.  
 
-Credentials can be retrieved from environment.json file. 
+Credentials can be retrieved from environment.json file. Here are the Jenkins Users Credentials.
+
+```
+  "users": [
+                        {
+                                "id": "admin",
+                                "password": "t0p!secret"
+                        },
+                        {
+                                "id": "visitor",
+                                "password": "Ock*7C)2"
+                        }
+                ]
+
+```
 
 The encryption seems to be asymmetric encryption algorithm. The public key is used for encryption. The person with the public key can and can only encrypt, and it can be distributed to any organization or individual; The private key is used for decryption, and can only be used to decrypt the information encrypted by the public key paired with the private key. Anyone with the private key can decrypt it.  
 
@@ -108,6 +122,24 @@ MAC mismatch. File has F3B838355B8685969C570D3D6448D6B247FD3F8588D1EDE8F9205BC08
 
 ```
 
+I saw the code base has been updated with new MAC. I tried with the new MAC. It works.
+
+Here is the Jenkins Users Credentials.
+
+```
+"users": [
+                        {
+                                "id": "admin",
+                                "password": "t0p!secret"
+                        },
+                        {
+                                "id": "visitor",
+                                "password": "Ock*7C)2"
+                        }
+                ]
+
+```
+
 ## Challenge 2: Goal: Cipher all credentials
 ----------- 
 
@@ -125,7 +157,7 @@ creation_rules:
 
 ```
 
-But in general, we should not leave the plain text secrets in json file. As a best practice, we should include the "string" key in encrypted_regex.
+But in general, we should not leave the plain text secrets in json file unless it's required. As a best practice, we should include the "string" key in encrypted_regex.
 
 
 ## Challenge 3a: Goal: Make Kubedoom work on Minikube with a single terraform apply.
