@@ -46,6 +46,36 @@ Error: Error getting data key: 0 successful groups required, got 0
 
 I tried to troubleshoot the issue, issue seems to be a version mismatch. I'm not able to upgrade sops to latest version (v3.7.1).
 
+Update as on 12-8-2021:
+
+Checksum doesn't match for carlpett/sops provider plugin.
+
+```
+C:\Users\seshanmugavel\Documents\Desktop Backup\Senthil\freeletics\techops-challenge\terraform>terraform init
+Initializing modules...
+- kubedoom in ..\modules\kubedoom
+
+Initializing the backend...
+
+Initializing provider plugins...
+- Reusing previous version of hashicorp/null from the dependency lock file
+- Reusing previous version of carlpett/sops from the dependency lock file
+- Reusing previous version of hashicorp/helm from the dependency lock file
+- Reusing previous version of hashicorp/kubernetes from the dependency lock file
+- Installing carlpett/sops v0.5.2...
+- Installing hashicorp/helm v1.3.2...
+- Installed hashicorp/helm v1.3.2 (signed by HashiCorp)
+- Installing hashicorp/kubernetes v1.13.3...
+- Installed hashicorp/kubernetes v1.13.3 (signed by HashiCorp)
+- Installing hashicorp/null v2.1.2...
+- Installed hashicorp/null v2.1.2 (signed by HashiCorp)
+╷
+│ Error: Failed to install provider
+│
+│ Error while installing carlpett/sops v0.5.2: archive has incorrect checksum zh:b4fbadc9217534821862c0f9870b07d4ff8442aa8a137492f75abfea3ed58d46 (expected
+│ zh:8c2a99e69c9628985c418fa37a8e8986af3aa7f1de3e04cfa69b4ad8f3901b7b)
+```
+
 Note: I will be proceeding with my solution without coding.
 
 **Solution:**
